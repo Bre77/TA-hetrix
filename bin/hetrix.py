@@ -1,8 +1,6 @@
 import os
 import sys
 import json
-import csv
-import time
 import requests
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
@@ -57,6 +55,19 @@ class Input(Script):
                 auth[item] = input_items[item]
         if(updates):
             self.service.inputs.__getitem__((name,kind)).update(**updates)
+
+        KEY = auth["key"]
+
+        # Get Data
+        with requests.get(f"https://api.hetrixtools.com/v1/{KEY}/uptime/monitors/0/30/") as r:
+            monitors = r.json()[0][0]
+            for monitor in monitors:
+                ew.write_event(Event(
+                    data=json.dumps(monitor),
+                    source=input_name,
+                    sourcetype="hetrix:monitors",
+                    time=monitor["Last_check"]
+                ))
 
 if __name__ == '__main__':
     exitcode = Input().run(sys.argv)
