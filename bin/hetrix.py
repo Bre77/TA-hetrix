@@ -2,7 +2,6 @@ import os
 import sys
 import json
 import requests
-import time
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib.modularinput import *
@@ -28,7 +27,6 @@ class Input(Script):
                 required_on_edit=False,
             )
         )
-
         return scheme
 
     def stream_events(self, inputs, ew):
@@ -69,8 +67,6 @@ class Input(Script):
         if updates:
             self.service.inputs.__getitem__((name, kind)).update(**updates)
 
-        KEY = auth["key"]
-
         # Checkpoint
         try:
             with open(checkpointfile, "r") as f:
@@ -80,7 +76,7 @@ class Input(Script):
 
         # Get Data
         with requests.get(
-            f"https://api.hetrixtools.com/v1/{KEY}/uptime/monitors/0/5000/"
+            f"https://api.hetrixtools.com/v1/{auth['key']}/uptime/monitors/0/5000/"
         ) as r:
             if not r.ok:
                 ew.log(EventWriter.ERROR, f"Failed to get data from Hetrix: {r.text}")
