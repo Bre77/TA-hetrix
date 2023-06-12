@@ -83,6 +83,8 @@ class Input(Script):
                 return
             for monitor in r.json()[0]:
                 if monitor["Last_Check"] > checkpoints.get(monitor["ID"], 0):
+                    # Remove the API Report Link since it contains the API key
+                    monitor["Report_Links"].pop("API_Report_Link")
                     ew.write_event(
                         Event(
                             data=json.dumps(monitor, separators=(",", ":")),
