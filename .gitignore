@@ -2,5 +2,5 @@ local/
 local.meta
 __pycache__
 *.pyc
-lib/*
+lib/
 !lib/requirements.txt
